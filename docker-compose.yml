@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # Main UDP Transfer System with Web UI
+  udp-transfer:
+    build: .
+    image: udp-reliable-transfer:latest
+    container_name: udp-transfer-system
+    ports:
+      - "5000:5000"  # Web UI
+      - "9000:9000/udp"  # UDP Server
+    volumes:
+      - ./server_data:/app/server_data
+      - ./sample_data:/app/sample_data
+    environment:
+      - FLASK_HOST=0.0.0.0
+      - FLASK_PORT=5000
+      - UDP_PORT=9000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Standalone UDP Server (optional)
+  udp-server:
+    build: .
+    image: udp-reliable-transfer:latest
+    container_name: udp-server-only
+    command: /app/server --port 9001 --out /app/server_data
+    ports:
+      - "9001:9001/udp"
+    volumes:
+      - ./server_data:/app/server_data
+    restart: unless-stopped
+    profiles:
+      - server-only
+
+  # Client for testing (optional)
+  udp-client:
+    build: .
+    image: udp-reliable-transfer:latest
+    container_name: udp-client-test
+    depends_on:
+      - udp-transfer
+    volumes:
+      - ./sample_data:/app/sample_data
+    command: /app/client --host udp-transfer --port 9000 --file /app/sample_data/sample.bin
+    profiles:
+      - test-client
+
+networks:
+  default:
+    name: udp-transfer-network
