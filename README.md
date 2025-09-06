@@ -1,8 +1,8 @@
-# 🚀 Reliable UDP File Transfer (Go‑Back‑N) — C++ + Web UI
+# 🚀 Reliable UDP File Transfer (Go‑Back‑N) — C + Web UI
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
-[![C++](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://isocpp.org/)
+[![C](https://img.shields.io/badge/C-99-blue.svg)](https://en.wikipedia.org/wiki/C_(programming_language))
 [![CMake](https://img.shields.io/badge/CMake-3.15+-green.svg)](https://cmake.org/)
 [![Flask](https://img.shields.io/badge/Flask-2.3+-red.svg)](https://flask.palletsprojects.com/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
@@ -39,7 +39,7 @@ This project implements a **reliable file transfer over UDP** using a simplified
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   Web UI        │    │   Flask API     │    │   UDP Server    │
-│   (HTML/CSS/JS) │◄──►│   (Python)      │◄──►│   (C++)        │
+│   (HTML/CSS/JS) │◄──►│   (Python)      │◄──►│   (C)          │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
          │                       │                       │
          │                       │                       │
@@ -60,7 +60,7 @@ This project implements a **reliable file transfer over UDP** using a simplified
 |----------|--------------|
 | **Docker (Recommended)** | Docker Desktop or Docker Engine |
 | **Windows** | Visual Studio 2019/2022 or MinGW-w64, CMake 3.15+, Python 3.7+ |
-| **Linux** | GCC/G++ (C++17), CMake 3.15+, Python 3.7+, build-essential |
+| **Linux** | GCC (C99), CMake 3.15+, Python 3.7+, build-essential |
 | **macOS** | Xcode Command Line Tools, CMake, Python 3.7+ |
 
 ### 🐳 Docker Quick Start (Easiest - Recommended)
@@ -115,7 +115,7 @@ python start_ui.py
 
 This will:
 - ✅ Install Python dependencies automatically
-- ✅ Check that C++ executables are built
+- ✅ Check that C executables are built
 - ✅ Start the Flask backend server
 - ✅ Open your browser to `http://localhost:5000`
 
@@ -246,7 +246,7 @@ docker-compose up --build -d
 ## 🧪 Testing & Quality
 
 ### Test Coverage
-- ✅ **Unit Tests**: C++ components with comprehensive coverage and edge case handling
+- ✅ **Unit Tests**: C components with comprehensive coverage and edge case handling
 - ✅ **Integration Tests**: End-to-end file transfer validation with real network conditions
 - ✅ **UI Tests**: Web interface automation and user experience validation
 - ✅ **Performance Tests**: Transfer speed and reliability metrics under various network conditions
@@ -270,7 +270,7 @@ docker-compose --profile test-client run --rm udp-client
 ## 🛠️ Technology Choices
 
 ### Why These Technologies?
-- **C++**: High-performance networking and system-level programming
+- **C**: High-performance networking and system-level programming
 - **Python/Flask**: Rapid web development with excellent ecosystem
 - **CMake**: Cross-platform build system with dependency management
 - **Docker**: Consistent deployment across different environments
@@ -280,7 +280,7 @@ docker-compose --profile test-client run --rm udp-client
 
 ```
 udp-reliable-transfer/
-├── 📁 src/                    # C++ source code
+├── 📁 src/                    # C source code
 │   ├── 📁 client/            # Client implementation
 │   │   └── 📄 main.c         # Client main function
 │   ├── 📁 server/            # Server implementation
@@ -446,7 +446,7 @@ cmake --build build
 ```
 
 ### Adding Features
-1. Modify C++ code in `src/`
+1. Modify C code in `src/`
 2. Update UI in `ui/` directory
 3. Add tests in `tests/`
 4. Update documentation
@@ -483,7 +483,7 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 | Component | Status | Coverage | Notes |
 |-----------|--------|----------|-------|
-| **C++ Core** | ✅ Complete | 95% | Production ready, tested |
+| **C Core** | ✅ Complete | 95% | Production ready, tested |
 | **Web UI** | ✅ Complete | 90% | Modern, responsive, working |
 | **Docker** | ✅ Complete | 100% | Fully functional, tested |
 | **File Transfers** | ✅ Complete | 100% | Multiple successful transfers verified |
