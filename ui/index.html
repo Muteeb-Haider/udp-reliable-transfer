@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UDP Reliable Transfer Protocol</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-network-wired"></i> UDP Reliable Transfer Protocol</h1>
+            <p>Secure and reliable file transfer over UDP with TCP-like guarantees</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Server Control Panel -->
+            <div class="panel server-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-server"></i> Server Control</h2>
+                    <div class="status-indicator" id="serverStatus">
+                        <span class="status-dot offline"></span>
+                        <span class="status-text">Offline</span>
+                    </div>
+                </div>
+                
+                <div class="panel-content">
+                    <div class="form-group">
+                        <label for="serverPort">Port:</label>
+                        <input type="number" id="serverPort" value="9000" min="1024" max="65535">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="serverOutputDir">Output Directory:</label>
+                        <input type="text" id="serverOutputDir" value="./server_data">
+                    </div>
+                    
+                    <div class="button-group">
+                        <button id="startServer" class="btn btn-primary">
+                            <i class="fas fa-play"></i> Start Server
+                        </button>
+                        <button id="stopServer" class="btn btn-danger" disabled>
+                            <i class="fas fa-stop"></i> Stop Server
+                        </button>
+                    </div>
+                    
+                    <div class="server-log">
+                        <h4>Server Log</h4>
+                        <div id="serverLog" class="log-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Client Control Panel -->
+            <div class="panel client-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-upload"></i> File Transfer</h2>
+                </div>
+                
+                <div class="panel-content">
+                    <div class="form-group">
+                        <label for="clientHost">Server Host:</label>
+                        <input type="text" id="clientHost" value="127.0.0.1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="clientPort">Server Port:</label>
+                        <input type="number" id="clientPort" value="9000" min="1024" max="65535">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fileInput">Select File:</label>
+                        <input type="file" id="fileInput" class="file-input">
+                    </div>
+                    
+                    <div class="advanced-options">
+                        <h4>Advanced Options</h4>
+                        <div class="options-grid">
+                            <div class="form-group">
+                                <label for="chunkSize">Chunk Size (bytes):</label>
+                                <input type="number" id="chunkSize" value="1024" min="64" max="8192">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="windowSize">Window Size:</label>
+                                <input type="number" id="windowSize" value="8" min="1" max="32">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="timeout">Timeout (ms):</label>
+                                <input type="number" id="timeout" value="300" min="100" max="5000">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="maxRetries">Max Retries:</label>
+                                <input type="number" id="maxRetries" value="3" min="1" max="10">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button id="sendFile" class="btn btn-success" disabled>
+                            <i class="fas fa-paper-plane"></i> Send File
+                        </button>
+                        <button id="clearLog" class="btn btn-secondary">
+                            <i class="fas fa-trash"></i> Clear Log
+                        </button>
+                    </div>
+                    
+                    <div class="transfer-progress" id="transferProgress" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <div class="progress-text" id="progressText">0%</div>
+                    </div>
+                    
+                    <div class="client-log">
+                        <h4>Transfer Log</h4>
+                        <div id="clientLog" class="log-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- File Management -->
+        <div class="panel file-panel">
+            <div class="panel-header">
+                <h2><i class="fas fa-folder"></i> File Management</h2>
+                <div class="button-group">
+                    <button id="refreshFiles" class="btn btn-secondary">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button id="cleanupFiles" class="btn btn-warning">
+                        <i class="fas fa-broom"></i> Cleanup
+                    </button>
+                </div>
+            </div>
+            
+            <div class="panel-content">
+                <div class="file-list">
+                    <h4>Received Files</h4>
+                    <div id="fileList" class="file-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Panel -->
+        <div class="panel stats-panel">
+            <div class="panel-header">
+                <h2><i class="fas fa-chart-bar"></i> Statistics</h2>
+            </div>
+            
+            <div class="panel-content">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalTransfers">0</div>
+                        <div class="stat-label">Total Transfers</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalBytes">0</div>
+                        <div class="stat-label">Total Bytes</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="successRate">100%</div>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="avgSpeed">0</div>
+                        <div class="stat-label">Avg Speed (KB/s)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

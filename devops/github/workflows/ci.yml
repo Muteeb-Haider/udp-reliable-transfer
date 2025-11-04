@@ -1,0 +1,29 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install deps
+        run: sudo apt-get update && sudo apt-get install -y build-essential cmake default-jdk
+      - name: Build
+        run: |
+          cmake -B build -S .
+          cmake --build build --config Release
+      - name: Run server and client
+        run: |
+          mkdir -p server_data
+          ./build/bin/server --port 9000 --out ./server_data &
+          SERVER_PID=$!
+          sleep 1
+          ./build/bin/client --host 127.0.0.1 --port 9000 --file ./sample_data/sample.bin
+          kill $SERVER_PID || true
+      - name: Java test
+        run: |
+          javac tests/java/TestRunner.java
+          java -ea tests/java/TestRunner sample_data/sample.bin server_data
